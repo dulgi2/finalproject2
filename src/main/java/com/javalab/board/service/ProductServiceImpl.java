@@ -1,5 +1,9 @@
 package com.javalab.board.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,14 +25,22 @@ public class ProductServiceImpl implements ProductService {
    public ProductServiceImpl(ProductRepository productRepository) {
       this.productRepository = productRepository;
    }
- 
+   
+   // 검색기능
+   @Override
+	public Page<Product> productSearchList(String searchKeyword, Pageable pageable){
+		return productRepository.findByproductNameContaining(searchKeyword, pageable);
+	}
 
    
-   // 상품리스트
-   @Override
-   public List<Product> getAllProducts() {
-      return productRepository.findAll();
-   }
+  
+	// 상품리스트 (페이징기능포함)
+	@Override
+	public Page<Product> getAllProducts(Pageable pageable) {
+		return productRepository.findAll(pageable);
+	}
+	
+	
    
    
    // 상품확인
@@ -134,8 +146,8 @@ public class ProductServiceImpl implements ProductService {
 
     // 카테고리 품목별 조회
 	@Override
-	public List<Product> getAllProductsByCategory(Integer categoryId) {
-		List<Product> products = productRepository.findProductByCategoryCategoryNo(categoryId);
+	public Page<Product> getAllProductsByCategory(Integer categoryId, Pageable pageable) {
+		Page<Product> products = productRepository.findProductByCategoryCategoryNo(categoryId, pageable);
 		return products;
 	}
 	

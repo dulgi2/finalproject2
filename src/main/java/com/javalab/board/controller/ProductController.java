@@ -1,6 +1,8 @@
 package com.javalab.board.controller;
 
 import com.javalab.board.dto.BasketDTO;
+
+
 import com.javalab.board.dto.BasketProductDTO;
 import com.javalab.board.dto.ProductDTO;
 import com.javalab.board.entity.Category;
@@ -10,13 +12,15 @@ import com.javalab.board.service.ProductService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.awt.print.Pageable;
+
+
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -35,15 +39,37 @@ public class ProductController {
 
     // 상품목록 가져오기
     @GetMapping
-    public String getAllProducts(Model model) {
-        List<Product> products = productService.getAllProducts();
-        List<Category> categories = categoryService.getAllCategories();
+    public String getAllProducts(Model model, 
+    		@PageableDefault(page=0, size=6, sort="productNo", direction = Sort.Direction.DESC) Pageable pageable,
+    		String searchKeyword) {
+    	 
+    	List<Category> categories = categoryService.getAllCategories();
+    	Page<Product> products = null;
+    	
+    	if(searchKeyword == null) {
+    		products = productService.getAllProducts(pageable);
+    	} else {
+    		products = productService.productSearchList(searchKeyword, pageable);
+    	}
+    	
         
-        model.addAttribute("categories" , categories);
+       
+        int nowPage = products.getPageable().getPageNumber() + 1;
+        int startPage = Math.max(nowPage - 4, 1);
+        int endPage = Math.min(nowPage + 5, products.getTotalPages());
+        
         model.addAttribute("products", products);
+        model.addAttribute("nowPage", nowPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("categories", categories);
+        
       
         return "product/allProducts";
     }
+    
+    
+    
     // 상품 상세보기
     @GetMapping("/{productNo}")
     public String productDetail(@PathVariable Integer productNo, Model model, BasketDTO basketDTO, BasketProductDTO basketProductDTO) {

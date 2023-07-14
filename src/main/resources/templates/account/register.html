@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link th:href="@{/css/header.css}" rel="stylesheet" />
+    <link th:href="@{/css/footer.css}" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/53a8c415f1.js" crossorigin="anonymous"></script>
       <style>
@@ -25,7 +27,7 @@ li {
 
 .wrap {
   width: 100%;
-  height: 100vh;
+  height: 145vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +36,7 @@ li {
 
 .login {
   width: 30%;
-  height: 900px;
+  height: 1000px;
   background: white;
   border-radius: 20px;
   display: flex;
@@ -71,7 +73,7 @@ h2 {
 }
 
 .register_id {
-  margin-top: 20px;
+  margin-top: 10px;
   width: 100%;
 }
 
@@ -212,8 +214,9 @@ h2 {
         }
     </script>
 </head>
-<body>
     <header th:replace="etc/header :: headerFragment"></header>
+<body>
+
   <div class="wrap">
         <div class="login">
             <h2>회원가입</h2>
@@ -266,6 +269,8 @@ h2 {
             </div>   
         </div>
     </div>
+    <br><br>
     </form>   
+    <footer th:replace="etc/footer :: footerFragment"></footer>
 </body>
 </html>

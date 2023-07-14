@@ -1,23 +1,29 @@
 package com.javalab.board.service;
 
-import java.awt.print.Pageable;
+
+
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.javalab.board.dto.ProductDTO;
 import com.javalab.board.entity.Product;
 
 public interface ProductService {
-	List<Product> getAllProducts();
 	
-	List<Product> getAllProductsByCategory(Integer categoryId);
+	//페이지 리스트
+	Page<Product> getAllProducts(Pageable pageable);
+	
+	Page<Product> getAllProductsByCategory(Integer categoryId, Pageable pageable);
 	
 	List<Product> mainAllProducts();	// 메인페이지 상품리스트 
 	
 	
-
+	// 페이지 + 상품 검색
+	Page<Product> productSearchList(String searchKeyword, Pageable pageable); 
+	
 	Product getProductById(int productId);
 
 	Product saveProduct(Product product, List<MultipartFile> file) throws Exception;
@@ -44,7 +50,7 @@ public interface ProductService {
 		return dto;
 	}
 
-	
+
 
 	
 

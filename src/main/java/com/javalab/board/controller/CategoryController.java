@@ -3,6 +3,7 @@ package com.javalab.board.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.javalab.board.entity.Category;
 import com.javalab.board.entity.Product;
 import com.javalab.board.service.CategoryService;
@@ -36,11 +38,23 @@ public class CategoryController {
     }
 
     @GetMapping("/products/{categoryId}")
-    public String getProducts(@PathVariable Integer categoryId, Model model) {
+    public String getProducts(@PathVariable Integer categoryId, Model model, Pageable pageable) {
     	
     	
-    	List<Product> products = productService.getAllProductsByCategory(categoryId);
+    	Page<Product> products = productService.getAllProductsByCategory(categoryId, pageable);
     	model.addAttribute("products", products);
+    	
+    	int nowPage = products.getPageable().getPageNumber() + 1;
+        int startPage = Math.max(nowPage - 4, 1);
+        int endPage = Math.min(nowPage + 5, products.getTotalPages());
+        
+        model.addAttribute("products", products);
+        model.addAttribute("nowPage", nowPage);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        
+    	
+    	
         return "product/allProducts";
     }
     
