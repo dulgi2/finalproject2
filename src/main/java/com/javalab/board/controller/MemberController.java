@@ -34,7 +34,11 @@ public class MemberController {
     
     // 회원가입 기능
     @PostMapping("/register")
-    public String registerMember(@ModelAttribute("member") Member member) {
+    public String registerMember(@ModelAttribute("member") Member member, @RequestParam(required = false) String passwordConfirm, Model model) {
+        // 비밀번호와 비밀번호 확인 필드의 값이 일치하는지 확인
+        if (!member.getMemberPassword().equals(passwordConfirm)) {
+            model.addAttribute("passwordMismatch", true); // 에러 메시지를 전달할 모델 속성 추가
+        }
         memberService.register(member);
         return "redirect:/";
     }
